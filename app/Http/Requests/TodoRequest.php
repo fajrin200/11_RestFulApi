@@ -13,9 +13,11 @@ class TodoRequest extends ApiRequest
      */
     public function authorize()
     {
-        return false;
+        if ($this->method() == Request::METHOD_POST)
+            return true;
+        $todo = $this->route('todo');
+        return auth()->user()->id == $todo->user_id;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,7 +26,9 @@ class TodoRequest extends ApiRequest
     public function rules()
     {
         return [
-            //
+            'todo' => 'required|string|max:255',
+            'label' => 'nullable|string',
+            'done' => 'nullable|boolean',
         ];
     }
 }
